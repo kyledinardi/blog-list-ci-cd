@@ -14,6 +14,7 @@ mongoose.connect(MONGODB_URI);
 app.use(cors());
 app.use(express.json());
 app.use(middleware.tokenExtractor);
+app.use(express.static('frontend/dist'));
 
 app.use('/api/login', loginRouter);
 app.use('/api/users', usersRouter);
