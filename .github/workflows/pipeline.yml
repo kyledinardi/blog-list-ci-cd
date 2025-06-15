@@ -1,0 +1,61 @@
+name: Deployment Pipeline
+
+env:
+  IS_SKIPPED: ${{ github.event_name != 'push' || contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  deployment_pipeline:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.53.0-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install backend dependencies
+        run: npm install
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+      - name: Install e2e test dependencies
+        working-directory: ./e2e
+        run: npm install
+      - name: Lint backend
+        run: npm run lint
+      - name: Lint frontend
+        working-directory: ./frontend
+        run: npm run lint
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+      - name: Run backend tests
+        run: npm run test
+      - name: Run frontend tests
+        working-directory: ./frontend
+        run: npm run test
+      - name: Run e2e tests
+        working-directory: ./e2e
+        run: npm run test
+      - name: Trigger deployment
+        if: ${{ env.IS_SKIPPED == 'false' }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+  tag_release:
+    needs: [deployment_pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump version and push tag
+        if: ${{ env.IS_SKIPPED == 'false' }}
+        uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
