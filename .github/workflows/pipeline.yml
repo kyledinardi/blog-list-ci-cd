@@ -1,7 +1,7 @@
 name: Deployment Pipeline
 
 env:
-  IS_SKIPPED: ${{ github.event_name != 'push' || contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+  IS_SKIPPED: ${{ github.event_name != 'push' || contains(toJson(github.event.head_commit.message), '#skip') }}
 
 on:
   push:
@@ -37,6 +37,8 @@ jobs:
         run: npm run build
       - name: Run backend tests
         run: npm run test
+        env: 
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       - name: Run frontend tests
         working-directory: ./frontend
         run: npm run test
