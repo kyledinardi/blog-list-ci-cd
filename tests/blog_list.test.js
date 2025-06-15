@@ -7,6 +7,7 @@ const app = require('../app');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 const testBlogs = require('./testBlogs');
+
 const api = supertest(app);
 
 describe('when there is initially some blogs saved', () => {
@@ -88,8 +89,6 @@ describe('when there is initially some blogs saved', () => {
         url: 'https://reactpatterns.com/',
         likes: 7,
       };
-
-      console.log('SECRET: ', process.env.JWT_SECRET);
 
       await api
         .post('/api/blogs')
