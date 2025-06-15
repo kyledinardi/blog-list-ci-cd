@@ -43,7 +43,7 @@ describe('Blog app', () => {
         page,
         'React patterns',
         'Michael Chan',
-        'https://reactpatterns.com/',
+        'https://reactpatterns.com/'
       );
 
       await expect(page.getByText('React patterns Michael Chan')).toBeVisible();
@@ -55,7 +55,7 @@ describe('Blog app', () => {
           page,
           'React patterns',
           'Michael Chan',
-          'https://reactpatterns.com/',
+          'https://reactpatterns.com/'
         );
       });
 
@@ -71,7 +71,7 @@ describe('Blog app', () => {
         await page.getByRole('button', { name: 'remove' }).click();
 
         await expect(
-          page.getByText('React patterns Michael Chan'),
+          page.getByText('React patterns Michael Chan')
         ).not.toBeVisible();
       });
 
@@ -85,7 +85,7 @@ describe('Blog app', () => {
         await page.getByRole('button', { name: 'view' }).click();
 
         await expect(
-          page.getByRole('button', { name: 'remove' }),
+          page.getByRole('button', { name: 'remove' })
         ).not.toBeVisible();
       });
 
@@ -94,14 +94,14 @@ describe('Blog app', () => {
           page,
           'Go To Statement Considered Harmful',
           'Edsger W. Dijkstra',
-          'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+          'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html'
         );
 
         await page.getByRole('button', { name: 'view' }).first().click();
         await page.getByRole('button', { name: 'view' }).click();
         await page.getByRole('button', { name: 'like' }).nth(1).click();
         await page.getByText('likes 1').waitFor();
-        
+
         await expect(page.locator('.blog').first()).toContainText(/likes 1/);
         await expect(page.locator('.blog').nth(1)).toContainText(/likes 0/);
       });
