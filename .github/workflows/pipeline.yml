@@ -2,6 +2,10 @@ name: Deployment Pipeline
 
 env:
   IS_SKIPPED: ${{ github.event_name != 'push' || contains(toJson(github.event.head_commit.message), '#skip') }}
+  PORT: 3003
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
 
 on:
   push:
@@ -37,8 +41,6 @@ jobs:
         run: npm run build
       - name: Run backend tests
         run: npm run test
-        env: 
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       - name: Run frontend tests
         working-directory: ./frontend
         run: npm run test

@@ -89,7 +89,7 @@ describe('Blog app', () => {
         ).not.toBeVisible();
       });
 
-      test.only('Blogs are ordered according to likes', async ({ page }) => {
+      test('Blogs are ordered according to likes', async ({ page }) => {
         await createBlog(
           page,
           'Go To Statement Considered Harmful',
